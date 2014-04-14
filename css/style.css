@@ -1,0 +1,52 @@
+body{
+	font-family: Arial, Helvetica, sans-serif;
+	line-height: 1.4;
+	padding: 3em;
+}
+h1{
+	font-size: 250%;
+	font-weight: bold;
+	margin-bottom: 1em;
+}
+#fhTable{
+	width:100%;
+	box-sizing: border-box;
+}
+#fhTable th, #fhTable td{
+	border: 1px solid #fff;
+	padding: 0.5em 1em;
+	background: #eee;
+}
+#fhTable tr:hover th, #fhTable tr:hover td{
+	background: #FFFFCC;
+}
+#fhTable th{
+	font-weight: bold;
+}
+#fhTable th, #fhTable td{
+	min-width: 400px;
+}
+#fhTable th:first-child, #fhTable td:first-child{
+	width: 3em;
+	min-width: 0;
+}
+
+.tableContainer{
+	max-height: 400px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
+}
+/*
+.tableContainer #fhTable thead{
+	position: fixed;
+}
+*/
+
+table.jFixTableHead tr.jFixTableHead-copy{
+	position: fixed;
+	z-index: 1000;
+	display: block;
+	width: 100%;
+	overflow: hidden;
+}
