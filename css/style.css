@@ -34,7 +34,7 @@ h1{
 .tableContainer{
 	max-height: 400px;
 	overflow-y: auto;
-	overflow-x: hidden;
+	overflow-x: auto;
 	position: relative;
 }
 /*
@@ -47,6 +47,6 @@ table.jFixTableHead tr.jFixTableHead-copy{
 	position: fixed;
 	z-index: 1000;
 	display: block;
-	width: 100%;
+	width: 0;
 	overflow: hidden;
 }

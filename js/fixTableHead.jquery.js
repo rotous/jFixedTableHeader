@@ -28,22 +28,42 @@
 
 	    	//find the width of the cells
 	    	$("tbody tr:first-child td", elTable).each(function(index){
-	    		console.log('cell width='+index+' =>', $(this).width(), $(this))
 	    		$("th,td", $head).eq(index).width($(this).width());
 	    	});
+	    	
+	    	//Set the width of the row
+	    	var elTableContainer = $head.parents(".tableContainer");
+	    	var containerWidth = elTableContainer.width();
+	    	var scrollbarWidth = elTableContainer[0].offsetWidth - elTableContainer[0].clientWidth;
+	    	$head.find("tr.jFixTableHead-copy").width(containerWidth-scrollbarWidth);
 	    		    	
 		}
 		
-	    return this.each(function() {
+    	var oldScrollTop = $(this).parent('.tableContainer').scrollTop();
+
+    	return this.each(function() {
 	    	var self = this;
 	    	_fixHead(this);
 	    	
 	    	$(window).resize(function(){
 	    		_resizeHeaderCells(self);
 	    	});
+	    	$(window).resize();
 	    	
 	    	$(window).scroll(function(){
 	    		$("tr.jFixTableHead-copy", self).css('top', $(self).parent().offset().top-$(document).scrollTop());
+	    	});
+	    	
+	    	$(this).parent('.tableContainer').scroll(function(e){
+	    		var st = $(self).parent('.tableContainer').scrollTop();
+	    		if ( st !== oldScrollTop ){
+	    			//vertical scroll
+	    			oldScrollTop = st;
+	    		}else{
+	    			//horizontal scroll
+		    		var scrollLeft = $(self).parent('.tableContainer').scrollLeft();
+		    		$(self).find("tr.jFixTableHead-copy").scrollLeft(scrollLeft);
+	    		}
 	    	});
 	    });
 	 
