@@ -10,25 +10,33 @@ h1{
 }
 #fhTable{
 	width:100%;
-	box-sizing: border-box;
+	sbox-sizing: border-box;
+	border: 0;
+	border-collapse: collapse;
 }
-#fhTable th, #fhTable td{
-	border: 1px solid #fff;
+#fhTable tr > *{
+	border: 30px solid #fff;
 	padding: 0.5em 1em;
 	background: #eee;
-}
-#fhTable tr:hover th, #fhTable tr:hover td{
-	background: #FFFFCC;
+	smin-width: 400px;
+	box-sizing: border-box;
 }
 #fhTable th{
 	font-weight: bold;
 }
-#fhTable th, #fhTable td{
-	min-width: 400px;
-}
-#fhTable th:first-child, #fhTable td:first-child{
+#fhTable tr > *:first-child{
 	width: 3em;
-	min-width: 0;
+	min-width: 3em;
+	text-align: right;
+}
+#fhTable tr:nth-child(odd) > *:nth-child(odd){
+	background-color: #ddd;
+}
+#fhTable tr:nth-child(even) > *:nth-child(even){
+	background-color: #ddd;
+}
+#fhTable tr:hover > *{
+	background: #FFFFCC !important;
 }
 
 .tableContainer{
@@ -37,16 +45,27 @@ h1{
 	overflow-x: auto;
 	position: relative;
 }
-/*
-.tableContainer #fhTable thead{
-	position: fixed;
-}
-*/
 
-table.jFixTableHead tr.jFixTableHead-copy{
-	position: fixed;
-	z-index: 1000;
-	display: block;
-	width: 0;
-	overflow: hidden;
+th{
+	border-color: blue !important;
+}
+th:nth-child(even){
+	border-color: lightblue !important;
+}
+td{
+	border-color: green !important;
+}
+td:nth-child(even){
+	border-color: lightgreen !important;
+}
+
+h2{
+	margin: 1em 0 0.5em;
+	font-size: 2em;
+	font-weight: bold;
+}
+
+#fhTable2 tr > *{
+	padding: 0 5px;
+	border: 1px dotted #DDDDDD;
 }
