@@ -1,22 +1,48 @@
 ;(function($){
+	
+	"use strict";
+	
 	var classPrefix = 'jfth-';
 	var tableClass = classPrefix + 'table';
 	var tableContainerClass = classPrefix + 'container';
 	var headClass = classPrefix + 'head';
 	
-	$.fn.fixTableHead = function(cssProps) {
+	$.fn.fixedTableHead = function(cssProps) {
 
-		function _fixHead(elTable){
+		/**
+		 * Returns the z-index integer value for an element
+		 */
+		function _findZIndex($element){
+			
+			//Make sure we have a jquery element
+			$element = $($element);
+			
+			var zIndex = $element.css('zIndex');
+			
+			while ( zIndex === 'auto' && $element.prop('tagName')!=='BODY' ){
+				$element = $element.parent();
+				zIndex = $element.css('zIndex');
+			}
+			
+			return zIndex==='auto' ? 0 : parseInt(zIndex);
+		}
+		
+		/**
+		 * Wraps the table with a div and creates a fixed head row for the table
+		 */
+		function _createFixedHead(elTable){
 			
 			if ( !$(elTable).hasClass(tableClass) ){
+
+				//Copy first row of the table
 				var $firstRow = $("tr", elTable).eq(0);
 				var $fixedRow = $firstRow.clone();
 				var $firstDataRow = $("tr", elTable).eq(1);
 				
-				//Create the table container
-				console.log('elTable=', $(elTable))
+				//Create a table container
 				$(elTable).wrap("<div class="+tableContainerClass+"/>");
 				var $container = $(elTable).parent("."+tableContainerClass);
+
 				//Set the css on the container
 				if ( cssProps && typeof cssProps === 'object' ){
 					$container.css(cssProps);
@@ -24,13 +50,21 @@
 				$container.css({
 					'overflow': 'auto'
 				})
+
+				//Calculate the z-index of the fixed header row
+				var zIndex = _findZIndex($firstRow) + 100;
+				
+				//Set the background color of the fixed header row
+				var backgroundColor = $firstRow.css('background-color');
+				if ( backgroundColor==='transparent' || backgroundColor==='rgba(0, 0, 0, 0)'){ backgroundColor = 'white'; }
 					
-				//Copy first row in the head
 				$fixedRow.addClass(headClass).css({
-					'position': 	'fixed',
-					'z-index': 		1000,
-					'overflow':		'hidden'
-				});;
+					'position': 		'fixed',
+					'z-index': 			zIndex,
+					'overflow':			'hidden',
+					'background-color':	backgroundColor
+				});
+				
 				$firstRow.after($fixedRow);
 
 		    	$(elTable).addClass(tableClass);
@@ -48,24 +82,28 @@
 			    	
 		    	}
 			}
-			
-	    	$("tr."+headClass+" > *", elTable).css('backgroundColor', 'red');
 	    	
 		}
 		
 		function _resizeHeaderCells(elTable){
 	    	
 	    	//resize the width of the cells
-			$tr = $("tr."+headClass, elTable);
-			$tds = $("> *", $tr);
-	    	$("tr", elTable).eq(2).children().each(function(index){
-	    		$tds.eq(index).width($(this).width());
+			var $tr = $("tr."+headClass, elTable);
+			var $tds = $("> *", $tr);
+	    	$("tr", elTable).eq(0).children().each(function(index){
+	    		console.log('setting '+index+' to '+$(this).width())
+	    		$tds.eq(index).width(($(this).width()+13)+'px');
+	    		console.log('width is now '+$tds.eq(index).width())
 	    	});
 	    	
-	    	//Set the width of the row
+	    	//Set the width of the container
+	    	var tableWidth = $(elTable).width();
 	    	var $container = $(elTable).parents("."+tableContainerClass);
-	    	var containerWidth = $container.width();
 	    	var scrollbarWidth = $container[0].offsetWidth - $container[0].clientWidth;
+	    	if ( !('width' in cssProps) ) { $container.width(tableWidth+scrollbarWidth); }
+	    	var containerWidth = $container.width();
+	    	
+	    	//Set the width of the row
 	    	$tr.width(containerWidth-scrollbarWidth);
 		}
 		
@@ -82,10 +120,11 @@
 				ready = true;
 				_resizeHeaderCells(elTable);
 				$firstDataRowCells.each(function(index){
-					if ( $(this).width() !== $fixedHeaderRowCells.eq(index).width() ) ready = false;
+					console.log($(this).width(), $fixedHeaderRowCells.eq(index).width())
+					if ( $(this).width() !== $fixedHeaderRowCells.eq(index).width() ){ ready = false; }
 				});
 				
-				if ( ++counter >= 4 ) break;
+				if ( ++counter >= 10 ) break;
 			}while( !ready );
 			console.log("counter=", counter)
 		}
@@ -94,7 +133,7 @@
 
     	return this.each(function() {
 	    	var self = this;
-	    	_fixHead(this);
+	    	_createFixedHead(this);
 	    	
 	    	$(window).resize(function(){
 
@@ -109,14 +148,14 @@
 	    	});
 	    	$(window).scroll();
 	    	
-	    	$(this).parent('.tableContainer').scroll(function(e){
+	    	$(this).parent('.'+tableContainerClass).scroll(function(e){
 	    		var st = $(self).parent("."+tableContainerClass).scrollTop();
 	    		if ( st !== oldScrollTop ){
 	    			//vertical scroll
 	    			oldScrollTop = st;
 	    		}else{
 	    			//horizontal scroll
-		    		var scrollLeft = $(self).parent('.tableContainer').scrollLeft();
+		    		var scrollLeft = $(self).parent('.'+tableContainerClass).scrollLeft();
 		    		$(self).find("tr."+headClass).scrollLeft(scrollLeft);
 	    		}
 	    	});
