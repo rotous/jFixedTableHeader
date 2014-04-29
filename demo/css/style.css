@@ -11,25 +11,27 @@ h1{
 }
 #fhTable{
 	width:100%;
-	sbox-sizing: border-box;
+	box-sizing: border-box;
 	border: 0;
 	border-collapse: collapse;
 	z-index: 100;
 	position: relative;
 }
 #fhTable tr > *{
-	border: 3px solid #fff;
+	border: 1px solid #fff;
 	padding: 0.5em 1em;
 	background: #eee;
-	min-width: 400px;
+/*	min-width: 400px; */
 	box-sizing: border-box;
 }
 #fhTable th{
 	font-weight: bold;
 }
 #fhTable tr > *:first-child{
-	width: 3em;
-	min-width: 3em;
+/*
+	width: 30px;
+	min-width: 30px;
+*/
 	text-align: right;
 }
 #fhTable tr:nth-child(odd) > *:nth-child(odd){
@@ -61,6 +63,11 @@ h2{
 	font-weight: bold;
 }
 
+#fhTable2{
+	width:100%;
+	border-collapse: collapse;
+	border: 0;
+}
 #fhTable2 tr > *{
 	padding: 0 5px;
 	border: 1px dotted #DDDDDD;
