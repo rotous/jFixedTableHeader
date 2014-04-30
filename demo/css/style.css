@@ -10,8 +10,8 @@ h1{
 	margin-bottom: 1em;
 }
 #fhTable{
-	width:100%;
-	sbox-sizing: border-box;
+	swidth: 100%;
+/*	sbox-sizing: border-box; */
 	border: 0;
 	border-collapse: collapse;
 	z-index: 100;
@@ -61,7 +61,11 @@ h2{
 	font-weight: bold;
 }
 
+#fhTable2{
+	min-width: 100%;
+}
 #fhTable2 tr > *{
 	padding: 0 5px;
 	border: 1px dotted #DDDDDD;
+	min-width: 150px;
 }

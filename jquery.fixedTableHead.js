@@ -2,12 +2,18 @@
 	
 	"use strict";
 	
-	var classPrefix = 'jfth-';
-	var tableClass = classPrefix + 'table';
-	var tableContainerClass = classPrefix + 'container';
-	var headClass = classPrefix + 'head';
+	var classPrefix = 'jfth';
+	var tableClass = classPrefix + '-table';
+	var tableContainerClass = tableClass + '-container';
+	var headClass = classPrefix + '-head';
 	
 	$.fn.fixedTableHead = function(cssProps) {
+		
+		var $table;
+		var $firstRow;
+		var $firstRowCopy;
+		var $firstDataRow;
+		var $container;
 
 		/**
 		 * Returns the z-index integer value for an element
@@ -31,17 +37,28 @@
 		 * Wraps the table with a div and creates a fixed head row for the table
 		 */
 		function _createFixedHead(elTable){
+			$table = $(elTable);
 			
-			if ( !$(elTable).hasClass(tableClass) ){
+			if ( !$table.hasClass(tableClass) ){
 
 				//Copy first row of the table
-				var $firstRow = $("tr", elTable).eq(0);
-				var $fixedRow = $firstRow.clone();
-				var $firstDataRow = $("tr", elTable).eq(1);
+				$firstRow = $("tr", $table).eq(0);
+				if ( $firstRow.length === 0 ){ return; } //No rows in the table
+				$firstRowCopy = $firstRow.clone();
+				$firstDataRow = $("tr", $table).eq(1);
 				
 				//Create a table container
-				$(elTable).wrap("<div class="+tableContainerClass+"/>");
-				var $container = $(elTable).parent("."+tableContainerClass);
+				$table.wrap("<div class="+tableContainerClass+"/>");
+				$container = $table.parent("."+tableContainerClass);
+				
+				//Check if we need to copy/set some size properties from the table to the container
+				var props = ['width', 'height', 'max-width', 'max-height'];
+				var tableStyles = $table[0].style;
+				console.log('$table=', $table)
+				console.log('styles=', tableStyles)
+				for ( var i=0; i<props.length; i++ ){
+					
+				}
 
 				//Set the css on the container
 				if ( cssProps && typeof cssProps === 'object' ){
@@ -49,7 +66,7 @@
 				}
 				$container.css({
 					'overflow': 'auto'
-				})
+				});
 
 				//Calculate the z-index of the fixed header row
 				var zIndex = _findZIndex($firstRow) + 100;
@@ -58,23 +75,23 @@
 				var backgroundColor = $firstRow.css('background-color');
 				if ( backgroundColor==='transparent' || backgroundColor==='rgba(0, 0, 0, 0)'){ backgroundColor = 'white'; }
 					
-				$fixedRow.addClass(headClass).css({
+				$firstRowCopy.addClass(headClass).css({
 					'position': 		'fixed',
 					'z-index': 			zIndex,
 					'overflow':			'hidden',
 					'background-color':	backgroundColor
 				});
 				
-				$firstRow.after($fixedRow);
+				$firstRow.after($firstRowCopy);
 
-		    	$(elTable).addClass(tableClass);
+		    	$table.addClass(tableClass);
 		    	
 		    	//Fix for collapsed borders (the outside of the fixed header row is not collapsed)
 		    	var borderCollapse = $(elTable).css('borderCollapse');
 		    	if ( borderCollapse === 'collapse' ){
 
 			    	//Remove top border of first data row if less the the border-bottom-width of the header row
-			    	var borderBottomWidth = parseInt($fixedRow.find(":first-child").css('borderBottomWidth'), 10);
+			    	var borderBottomWidth = parseInt($firstRowCopy.find(":first-child").css('borderBottomWidth'), 10);
 			    	var borderTopWidth = parseInt($firstDataRow.find(":first-child").css('borderTopWidth'), 10);
 			    	borderTopWidth = borderTopWidth-borderBottomWidth;
 			    	if ( borderTopWidth < 0 ) borderTopWidth = 0;
@@ -82,7 +99,6 @@
 			    	
 		    	}
 			}
-	    	
 		}
 		
 		function _resizeHeaderCells(elTable){
@@ -91,9 +107,7 @@
 			var $tr = $("tr."+headClass, elTable);
 			var $tds = $("> *", $tr);
 	    	$("tr", elTable).eq(0).children().each(function(index){
-	    		console.log('setting '+index+' to '+$(this).width())
 	    		$tds.eq(index).width(($(this).width()+13)+'px');
-	    		console.log('width is now '+$tds.eq(index).width())
 	    	});
 	    	
 	    	//Set the width of the container
@@ -120,7 +134,6 @@
 				ready = true;
 				_resizeHeaderCells(elTable);
 				$firstDataRowCells.each(function(index){
-					console.log($(this).width(), $fixedHeaderRowCells.eq(index).width())
 					if ( $(this).width() !== $fixedHeaderRowCells.eq(index).width() ){ ready = false; }
 				});
 				
