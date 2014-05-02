@@ -1,5 +1,5 @@
 $(document).ready(function(){
-/*
+//*
 	$("#fhTable").fixedTableHead({
 		'max-height': 400,
 		'max-width': '100%',
@@ -10,6 +10,6 @@ $(document).ready(function(){
 		'max-width': '100%',
 		'width': '50%'
 	});
-*/
-	$("#fhTable").fixedHeaderTable();
+//*/
+//	$("#fhTable").fixedHeaderTable();
 });

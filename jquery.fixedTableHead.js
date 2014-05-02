@@ -82,9 +82,7 @@
 				$tableCopy.addClass(tableCopyClass).wrap('<div class="'+tableCopyContainerClass+'" />');
 				$tableCopyContainer = $tableCopy.parent("."+tableCopyContainerClass);
 				$tableCopyContainer.css({
-					'position': 'absolute',
-					'left': 0,
-					'top': 0,
+					'position': 'fixed'
 				});
 				
 				//Wrap the original table with a div
@@ -150,6 +148,31 @@
 			}
 		}
 		
+    	var oldScrollTop = $(this).parent("."+tableContainerClass).scrollTop();
+
+		function _positionHead(elTable){
+			$table = $(elTable);
+			$tableContainer = $table.parent("."+tableContainerClass);
+			$tableCopyContainer = $tableContainer.children("."+tableCopyContainerClass);
+			console.log($table, $tableContainer, $tableCopyContainer)
+
+    		$tableCopyContainer.css('top', $tableContainer.offset().top-$(document).scrollTop());
+    		$tableCopyContainer.css('left', $tableContainer.offset().left-$(document).scrollLeft());
+			
+/*
+    		var st = $(self).parent("."+tableContainerClass).scrollTop();
+    		if ( st !== oldScrollTop ){
+    			console.log('vertical');
+    			//vertical scroll
+    			oldScrollTop = st;
+    		}else{
+    			//horizontal scroll
+	    		var scrollLeft = $(self).parent('.'+tableContainerClass).scrollLeft();
+	    		$(self).find("tr."+headClass).scrollLeft(scrollLeft);
+    		}
+*/
+		}
+		
 		function _resizeHeaderCells(elTable){
 	    	
 			//Resize the width of the table
@@ -212,8 +235,6 @@
 //			console.log("counter=", counter)
 		}
 		
-    	var oldScrollTop = $(this).parent("."+tableContainerClass).scrollTop();
-
     	return this.each(function() {
 	    	var self = this;
 	    	_createFixedHead(this);
@@ -224,8 +245,7 @@
 	    	});
 	    	
 	    	$(window).scroll(function(){
-	    		$("tr."+headClass, self).css('top', $(self).parent().offset().top-$(document).scrollTop());
-	    		$("tr."+headClass, self).css('left', $(self).parent().offset().left-$(document).scrollLeft());
+	    		_positionHead(self);
 	    	});
 
 	    	_resizeHeaderCells(self);
@@ -233,15 +253,7 @@
 	    	setTimeout(function(){_resizeHeaderCells(self);}, 2000);
 	    	
 	    	$(this).parent('.'+tableContainerClass).scroll(function(e){
-	    		var st = $(self).parent("."+tableContainerClass).scrollTop();
-	    		if ( st !== oldScrollTop ){
-	    			//vertical scroll
-	    			oldScrollTop = st;
-	    		}else{
-	    			//horizontal scroll
-		    		var scrollLeft = $(self).parent('.'+tableContainerClass).scrollLeft();
-		    		$(self).find("tr."+headClass).scrollLeft(scrollLeft);
-	    		}
+	    		_positionHead(self);
 	    	});
 	    });
 	 
